@@ -1,23 +1,29 @@
 # -*- coding:utf-8 -*-
 import wave
 import numpy as np
+import pandas as pd
+import csv
 from scipy import signal
+
 
 def encode(s):
     return ' '.join([bin(ord(c)).replace('0b', '') for c in s])
 
+
 def decode(s):
     return ''.join([chr(i) for i in [int(b, 2) for b in s.split(' ')]])
+
 
 def str2code(msg):
     code = []
     for c in msg:
         encode_c = encode(c)
-        while(len(encode_c) < 8):
+        while (len(encode_c) < 8):
             encode_c = '0' + encode_c
         for i in encode_c:
             code.append(int(i))
     return code
+
 
 def int2code(num):
     code = []
@@ -28,11 +34,13 @@ def int2code(num):
         code = [0] + code
     return code
 
+
 def code2int(code):
     num_int = 0
-    for i in range(0,10):
-        num_int += int(code[i]) * 2**(10-i)
+    for i in range(0, 10):
+        num_int += int(code[i]) * 2 ** (10 - i)
     return num_int
+
 
 def code2str(code):
     msg = ''
@@ -40,10 +48,11 @@ def code2str(code):
         if i + 8 > len(code):
             break
         c = ''
-        for j in range(i,i+8):
+        for j in range(i, i + 8):
             c += str(code[j])
         msg += decode(c)
     return msg
+
 
 def save_wave_file(wave_data, file_name, nchannels=1, sampwidth=2, framerate=9600):
     wave_data = np.array(wave_data).astype(np.short)
@@ -71,11 +80,27 @@ def open_wave_file(file_name):
     data = np.fromstring(str_data, dtype=np.short)
     return data, nframes, framerate
 
+
+def parse_csv(filename="content.csv", need_payload=False):
+    data = pd.read_csv(filename, header=4, index_col=False)
+    if not need_payload:
+        return data["onset"].tolist()
+    payload = data.iloc[:, 4:]
+    payload = np.array(payload)
+    payload_formatted = []
+    for _ in payload:
+        payload_formatted.append(_[~pd.isnull(_)].tolist())
+    return payload_formatted
+
+
+def write_ans_to_csv(data, filename="res.csv"):
+    with open(filename, 'w', newline="") as f:
+        csv_writer = csv.writer(f)
+        for row in data:
+            csv_writer.writerow(row)
+
+
 if __name__ == "__main__":
-    txt = open("msg.txt")
-    a = txt.read()
-    print(a)
-    b = str2code(a)
-    for c in b:
-        print(c,end=' ')
-    txt.close()
+    data = parse_csv(need_payload=True)
+    print(data)
+    write_ans_to_csv(data)
