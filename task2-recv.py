@@ -3,6 +3,7 @@ from record import record_file
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
+import sys
 
 f = 4000
 fs = 48000
@@ -84,7 +85,8 @@ def decode(filename = 'recordfile.wav'):
         print(size, decode_data)
 
 if __name__ == '__main__':
-    record_file(5,"recordfile.wav")
+    seconds = int(sys.argv[1])
+    record_file(seconds,"recordfile.wav")
     size, string = decode('recordfile.wav')
     if(size != 0 and string != None):
         print('length: %d' % int(size/8),string)

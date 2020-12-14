@@ -18,8 +18,17 @@ class window:
         self.main_window.show()
 
     def handle_generate(self):
-        code = str2code(self.main_window.message.text())
-        encode(code)
+        user_str = self.main_window.message.text()
+        sig = []
+        blank_size = int(48000/4)
+        sig.extend(np.zeros(2*blank_size))
+        for i in range(0,len(user_str),30):
+            j = 30 if i + 30 < len(user_str) else len(user_str)
+            test_code = str2code(user_str[i:i+j])
+            sig.extend(encode(test_code))
+            sig.extend(np.zeros(blank_size))
+        sig.extend(np.zeros(2*blank_size))
+        save_wave_file(sig,'output.wav',framerate=fs)
 
     def handle_play_file(self):
         self.sound = PyQt5.QtMultimedia.QSound(self.main_window.file_name.text())
