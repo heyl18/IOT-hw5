@@ -10,7 +10,7 @@ duration = 0.025
 symbol_len = int(duration * fs)
 size_data_len = 8
 pre_data_len = 20
-threshold = 0.8
+threshold = 0.6
 
 def decode_wave(sig_rec):
     window = int(symbol_len)  # 窗口长度为采样点个数
@@ -22,8 +22,8 @@ def decode_wave(sig_rec):
         # 考虑到声音通信过程中的频率偏移，我们取以目标频率为中心的5个频率采样点中最大的一个来代表目标频率的强度
         impulse_fft[i] = max(y[index_impulse-2:index_impulse+2])
     impulse_fft = impulse_fft/max(impulse_fft)  # 幅值归一化
-    # plt.plot(impulse_fft)
-    # plt.show()
+    plt.plot(impulse_fft)
+    plt.show()
     first_impulse = 0  # 取出impulse 第一个起始位置
     header_data = []
     size_data = []
@@ -73,7 +73,7 @@ def decode(filename = 'recordfile.wav'):
 
     plt.plot(sig_rec)
     plt.show()
-    onset = [42146,160527,276919]
+    onset = [3591416]
     for i in onset:
         size, decode_data = decode_wave(sig_rec[i:])
         print(size, decode_data)
