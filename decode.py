@@ -41,30 +41,30 @@ def decode(filename = 'recordfile.wav'):
             first_impulse = i
             break
     # print(first_impulse)
-    header_datas = []
-    size_datas = []
-    decode_datas =[]
+    header_data = []
+    size_data = []
+    decode_data =[]
     for i in range(0,6):
         if first_impulse + i*window >= len(impulse_fft):
             break
-        header_datas.append(1 if impulse_fft[first_impulse+i*window] > 0.4 else 0)
-    # if(header_datas != [1,0,1,0,1,0]):
+        header_data.append(1 if impulse_fft[first_impulse+i*window] > 0.4 else 0)
+    # if(header_data != [1,0,1,0,1,0]):
     #     return 0, None
     for i in range(6,17):
         if first_impulse + i*window >= len(impulse_fft):
             break
-        size_datas.append(1 if impulse_fft[first_impulse+i*window] > 0.4 else 0)
-    size = code2int(size_datas)
+        size_data.append(1 if impulse_fft[first_impulse+i*window] > 0.4 else 0)
+    size = code2int(size_data)
     # if size <= 0 or size > 2048:
     #     return 0,None
     for i in range(17,17+size):
         if first_impulse + i*window >= len(impulse_fft):
             break
-        decode_datas.append(1 if impulse_fft[first_impulse+i*window] > 0.4 else 0)
-    string = code2str(decode_datas)
-    print(header_datas)
-    print(size_datas)
-    print(decode_datas)
+        decode_data.append(1 if impulse_fft[first_impulse+i*window] > 0.4 else 0)
+    string = code2str(decode_data)
+    print(header_data)
+    print(size_data)
+    print(decode_data)
     return size, string
 
 if __name__ == '__main__':
