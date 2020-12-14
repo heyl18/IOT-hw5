@@ -5,7 +5,7 @@ import random
 from utils import save_wave_file, int2code,str2code
 
 fm1 = 6000  # signal 1 freq
-fm0 = 4000  # signal 0 freq
+fm0 = 0  # signal 0 freq
 fs = 48000  # sample rate
 Am = 3e6
 duration = 0.0125

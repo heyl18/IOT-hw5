@@ -56,7 +56,6 @@ def decode_wave(sig_rec):
         if first_impulse + i*window >= len(impulse_fft):
             break
         decode_data.append(1 if impulse_fft[first_impulse+i*window] > threshold else 0)
-    # string = code2str(decode_data)
     print(header_data)
     print(size_data)
     print(decode_data)
@@ -68,7 +67,9 @@ def decode(filename = 'recordfile.wav'):
     返回：size：编码长度，string：解码出的字符串
     '''
     sig_rec, nframes, framerate = open_wave_file(filename)
-
+    sig_rec = sig_rec[12000:]
+    plt.plot(sig_rec)
+    plt.show()
     max_symbol_sum = 0
     first_impulse = 0  # 取出impulse 第一个起始位置
 
@@ -76,25 +77,24 @@ def decode(filename = 'recordfile.wav'):
         symbol_sum = np.sum(np.abs(sig_rec[i:i+symbol_len]))
         if symbol_sum > max_symbol_sum:
             max_symbol_sum = symbol_sum
+    print(max_symbol_sum)
     for i in range(0,len(sig_rec)-symbol_len):
         symbol_sum = np.sum(np.abs(sig_rec[i:i+symbol_len]))
-        if symbol_sum > 0.8*max_symbol_sum:
+        if symbol_sum > 0.7*max_symbol_sum:
             max_sum = symbol_sum
             for j in range(i-int(symbol_len/2),i+int(symbol_len)):
                 now_sum = np.sum(np.abs(sig_rec[j:j+symbol_len]))
                 if now_sum > max_sum:
                     max_sum = now_sum
-                    first_impluse = j
+                    first_impulse = j
             break
     print(first_impulse)
     onset = [first_impulse]
     for i in onset:
         size, decode_data = decode_wave(sig_rec[i:])
-        print(size, decode_data)
+        print(code2str(decode_data))
 
 if __name__ == '__main__':
     seconds = int(sys.argv[1])
     record_file(seconds,"recordfile.wav")
-    size, string = decode('recordfile.wav')
-    if(size != 0 and string != None):
-        print('length: %d' % int(size/8),string)
+    decode('recordfile.wav')
