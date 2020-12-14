@@ -33,7 +33,6 @@ def encode(data):
 
 if __name__ == '__main__':
     user_str = input("Please enter a string to be encoded:")
-    # user_str = "I am a poor student from Tsinghua University!"
     test_code = str2code(user_str)
     encode(test_code)
     print(len(test_code))
