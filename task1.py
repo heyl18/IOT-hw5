@@ -81,4 +81,3 @@ if __name__ == '__main__':
     # size, string = decode('res.wav')
     # if(size != 0 and string != None):
     #     print('length: %d' % int(size/8),string)
-    
