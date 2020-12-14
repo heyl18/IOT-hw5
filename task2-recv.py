@@ -43,7 +43,7 @@ def decode_wave(sig_rec):
         return 0,None
     impulse_fft = np.zeros(window*(size+1))
     decode_data =[]
-    sig_rec = sig_rec[(size_data_len + pre_data_len) * window:(size_data_len + pre_data_len + size) * window]
+    sig_rec = sig_rec[(size_data_len + pre_data_len) * window:(size_data_len + pre_data_len + size + 1) * window]
     for i in range(0,len(sig_rec)-window):
         y = abs(np.fft.fft(sig_rec[i:i+window]))
         index_impulse = round(f/fs*window)
