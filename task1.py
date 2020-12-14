@@ -1,4 +1,4 @@
-from utils import open_wave_file, code2str, code2int
+from utils import open_wave_file, code2str, code2int, parse_csv, write_ans_to_csv
 from record import record_file
 import numpy as np
 import matplotlib.pyplot as plt
@@ -22,8 +22,8 @@ def decode_wave(sig_rec):
         # 考虑到声音通信过程中的频率偏移，我们取以目标频率为中心的5个频率采样点中最大的一个来代表目标频率的强度
         impulse_fft[i] = max(y[index_impulse-2:index_impulse+2])
     impulse_fft = impulse_fft/max(impulse_fft)  # 幅值归一化
-    plt.plot(impulse_fft)
-    plt.show()
+    # plt.plot(impulse_fft)
+    # plt.show()
     first_impulse = 0  # 取出impulse 第一个起始位置
     header_data = []
     size_data = []
@@ -71,9 +71,7 @@ def decode(filename = 'recordfile.wav'):
     # b, a = signal.butter(8, [2*4000*0.9/48000,2*6000*1.1/48000], 'bandpass')
     # sig_rec = signal.filtfilt(b, a, sig_rec)
 
-    plt.plot(sig_rec)
-    plt.show()
-    onset = [3591416]
+    onset = parse_csv(filename="content.csv")
     for i in onset:
         size, decode_data = decode_wave(sig_rec[i:])
         print(size, decode_data)

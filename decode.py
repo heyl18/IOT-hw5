@@ -71,8 +71,13 @@ def decode(filename = 'recordfile.wav'):
     # b, a = signal.butter(8, [2*4000*0.9/48000,2*6000*1.1/48000], 'bandpass')
     # sig_rec = signal.filtfilt(b, a, sig_rec)
 
-    for i in range(0,len(sig_rec)-symbol_len):
-        smb = np.sum(np.abs(sig_rec[i:i+symbol_len]))
+    # for i in range(0,len(sig_rec)-symbol_len):
+    #     smb = np.sum(np.abs(sig_rec[i:i+symbol_len]))
+    # first_impulse = 0  # 取出impulse 第一个起始位置
+    # for i in range(half_window+1, n - half_window):
+    #     if impulse_fft[i] > 0.5 and impulse_fft[i] == max(impulse_fft[i-half_window:i+half_window]):
+    #         first_impulse = i
+    #         break
     onset = [3591416]
     for i in onset:
         size, decode_data = decode_wave(sig_rec[i:])
