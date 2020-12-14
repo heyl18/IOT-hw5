@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 .idea/
-.wav
+*.wav
+*.csv

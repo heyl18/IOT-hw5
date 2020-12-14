@@ -82,7 +82,7 @@ def open_wave_file(file_name):
 
 
 def parse_csv(filename="content.csv", need_payload=False):
-    data = pd.read_csv(filename, header=4, index_col=False)
+    data = pd.read_csv(filename, skiprows=4, sep=",")
     if not need_payload:
         return data["onset"].tolist()
     payload = data.iloc[:, 4:]
@@ -101,6 +101,6 @@ def write_ans_to_csv(data, filename="res.csv"):
 
 
 if __name__ == "__main__":
-    data = parse_csv(need_payload=True)
+    data = parse_csv(need_payload=False)
     print(data)
     write_ans_to_csv(data)
