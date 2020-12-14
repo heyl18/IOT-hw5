@@ -4,7 +4,7 @@ from scipy import signal
 import random
 from utils import save_wave_file, int2code,str2code
 
-fm1 = 16000  # signal 1 freq
+fm1 = 6000  # signal 1 freq
 fm0 = 4000  # signal 0 freq
 fs = 48000  # sample rate
 Am = 3e6
@@ -17,12 +17,12 @@ smb1 = Am * np.cos(2*np.pi*fm1*t)
 smb0 = Am * np.cos(2*np.pi*fm0*t)
 
 pre_data = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
-def encode(datas):
+def encode(data):
     sig = []
     blank_len = int(symbol_len * 4)
     sig.extend(np.zeros(blank_len))
-    len_data = int2code(len(datas))
-    for data in pre_data + len_data + datas:
+    len_data = int2code(len(data))
+    for data in pre_data + len_data + data:
         if data == 0:
             sig.extend(smb0)
         else:
@@ -33,7 +33,6 @@ def encode(datas):
 
 if __name__ == '__main__':
     user_str = input("Please enter a string to be encoded:")
-    # user_str = "I am a poor student from Tsinghua University!"
     test_code = str2code(user_str)
     encode(test_code)
     print(len(test_code))

@@ -30,15 +30,15 @@ def int2code(num):
     num_bin = bin(num)[2:]
     for c in num_bin:
         code.append(int(c))
-    while len(code) < 11:
+    while len(code) < 8:
         code = [0] + code
     return code
 
 
 def code2int(code):
     num_int = 0
-    for i in range(0, 10):
-        num_int += int(code[i]) * 2 ** (10 - i)
+    for i in range(8):
+        num_int += int(code[i]) * 2**(7-i)
     return num_int
 
 
