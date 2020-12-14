@@ -20,13 +20,14 @@ class window:
     def handle_generate(self):
         user_str = self.main_window.message.text()
         sig = []
-        blank_size = int(48000/4)
+        fs = 48000
+        blank_size = int(fs/4)
         sig.extend(np.zeros(2*blank_size))
         for i in range(0,len(user_str),30):
             j = 30 if i + 30 < len(user_str) else len(user_str)
             test_code = str2code(user_str[i:i+j])
             sig.extend(encode(test_code))
-            sig.extend(np.zeros(blank_size))
+            sig.extend(np.zeros(2*blank_size))
         sig.extend(np.zeros(2*blank_size))
         save_wave_file(sig,'output.wav',framerate=fs)
 

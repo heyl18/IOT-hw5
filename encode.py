@@ -16,7 +16,7 @@ smb1 = Am * np.cos(2*np.pi*fm1*t)
 
 smb0 = Am * np.cos(2*np.pi*fm0*t)
 
-pre_data = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
+pre_data = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
 def encode(data):
     sig = []
     blank_len = symbol_len * 2

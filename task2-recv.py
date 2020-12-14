@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from scipy import signal
 import sys
 
-f = 4000
+f = 6000
 fs = 48000
 duration = 0.0125
 symbol_len = int(duration * fs)
@@ -31,13 +31,13 @@ def decode_wave(sig_rec):
     for i in range(0,pre_data_len):
         if first_impulse + i*window >= len(impulse_fft):
             break
-        header_data.append(0 if impulse_fft[first_impulse+i*window] > threshold else 1)
-    if(header_data != [0, 1, 0, 1, 0, 1, 0, 1, 0, 1]):
+        header_data.append(1 if impulse_fft[first_impulse+i*window] > threshold else 0)
+    if(header_data != [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]):
         return 0, None
     for i in range(pre_data_len,pre_data_len+size_data_len):
         if first_impulse + i*window >= len(impulse_fft):
             break
-        size_data.append(0 if impulse_fft[first_impulse+i*window] > threshold else 1)
+        size_data.append(1 if impulse_fft[first_impulse+i*window] > threshold else 0)
     size = code2int(size_data)
     if size <= 0 or size > 255:
         return 0,None
@@ -55,7 +55,7 @@ def decode_wave(sig_rec):
     for i in range(0,size):
         if first_impulse + i*window >= len(impulse_fft):
             break
-        decode_data.append(0 if impulse_fft[first_impulse+i*window] > threshold else 1)
+        decode_data.append(1 if impulse_fft[first_impulse+i*window] > threshold else 0)
     # string = code2str(decode_data)
     print(header_data)
     print(size_data)
@@ -68,18 +68,26 @@ def decode(filename = 'recordfile.wav'):
     返回：size：编码长度，string：解码出的字符串
     '''
     sig_rec, nframes, framerate = open_wave_file(filename)
-    
-    # b, a = signal.butter(8, [2*4000*0.9/48000,2*6000*1.1/48000], 'bandpass')
-    # sig_rec = signal.filtfilt(b, a, sig_rec)
 
-    # for i in range(0,len(sig_rec)-symbol_len):
-    #     smb = np.sum(np.abs(sig_rec[i:i+symbol_len]))
-    # first_impulse = 0  # 取出impulse 第一个起始位置
-    # for i in range(half_window+1, n - half_window):
-    #     if impulse_fft[i] > 0.5 and impulse_fft[i] == max(impulse_fft[i-half_window:i+half_window]):
-    #         first_impulse = i
-    #         break
-    onset = [3591416]
+    max_symbol_sum = 0
+    first_impulse = 0  # 取出impulse 第一个起始位置
+
+    for i in range(0,len(sig_rec)-symbol_len):
+        symbol_sum = np.sum(np.abs(sig_rec[i:i+symbol_len]))
+        if symbol_sum > max_symbol_sum:
+            max_symbol_sum = symbol_sum
+    for i in range(0,len(sig_rec)-symbol_len):
+        symbol_sum = np.sum(np.abs(sig_rec[i:i+symbol_len]))
+        if symbol_sum > 0.8*max_symbol_sum:
+            max_sum = symbol_sum
+            for j in range(i-int(symbol_len/2),i+int(symbol_len)):
+                now_sum = np.sum(np.abs(sig_rec[j:j+symbol_len]))
+                if now_sum > max_sum:
+                    max_sum = now_sum
+                    first_impluse = j
+            break
+    print(first_impulse)
+    onset = [first_impulse]
     for i in onset:
         size, decode_data = decode_wave(sig_rec[i:])
         print(size, decode_data)
