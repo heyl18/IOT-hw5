@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
 import sys
+import time
 
 f = 6000
 fs = 48000
@@ -11,7 +12,8 @@ duration = 0.0125
 symbol_len = int(duration * fs)
 size_data_len = 8
 pre_data_len = 10
-threshold = 0.5
+threshold = 0.35
+pre_threshold=0.3
 
 
 def decode_wave(sig_rec):
@@ -71,31 +73,47 @@ def decode(filename='recordfile.wav'):
     '''
     sig_rec, nframes, framerate = open_wave_file(filename)
     sig_rec = sig_rec[12000:]
-    plt.plot(sig_rec)
-    plt.show()
-    max_symbol_sum = 0
-    first_impulse = 0  # 取出impulse 第一个起始位置
-
-    for i in range(0, len(sig_rec) - symbol_len):
-        symbol_sum = np.sum(np.abs(sig_rec[i:i + symbol_len]))
-        if symbol_sum > max_symbol_sum:
-            max_symbol_sum = symbol_sum
-    print(max_symbol_sum)
-    for i in range(0, len(sig_rec) - symbol_len):
-        symbol_sum = np.sum(np.abs(sig_rec[i:i + symbol_len]))
-        if symbol_sum > 0.7 * max_symbol_sum:
-            max_sum = symbol_sum
-            for j in range(i - int(symbol_len / 2), i + int(symbol_len)):
-                now_sum = np.sum(np.abs(sig_rec[j:j + symbol_len]))
-                if now_sum > max_sum:
-                    max_sum = now_sum
-                    first_impulse = j
-            break
-    print(first_impulse)
-    onset = [first_impulse]
-    for i in onset:
-        size, decode_data = decode_wave(sig_rec[i:])
-        print(code2str(decode_data))
+    sig_rec_backup = sig_rec
+    sig_rec=sig_rec[:int(len(sig_rec)/2)]
+    ans=""
+    totalBits=0
+    time_start=time.time()
+    for _ in range(2):
+        plt.plot(sig_rec)
+        plt.show()
+        max_symbol_sum = 0
+        first_impulse = 0  # 取出impulse 第一个起始位置
+        for i in range(0, len(sig_rec) - symbol_len):
+            symbol_sum = np.sum(np.abs(sig_rec[i:i + symbol_len]))
+            if symbol_sum > max_symbol_sum:
+                max_symbol_sum = symbol_sum
+        print(max_symbol_sum)
+        for i in range(0, len(sig_rec) - symbol_len):
+            symbol_sum = np.sum(np.abs(sig_rec[i:i + symbol_len]))
+            if symbol_sum > pre_threshold * max_symbol_sum:
+                max_sum = symbol_sum
+                for j in range(i - int(symbol_len / 2), i + int(symbol_len)):
+                    now_sum = np.sum(np.abs(sig_rec[j:j + symbol_len]))
+                    if now_sum > max_sum:
+                        max_sum = now_sum
+                        first_impulse = j
+                break
+        print(first_impulse)
+        if _ == 0:
+            sig_rec=sig_rec_backup
+        plt.plot(sig_rec[first_impulse:])
+        plt.show()
+        size, decode_data = decode_wave(sig_rec[first_impulse:])
+        totalBits+=size
+        ans+=code2str(decode_data)
+        if _ == 0:
+            sig_rec=sig_rec[first_impulse+(size_data_len + pre_data_len + size + 1) * symbol_len:]
+    print(ans)
+    time_end = time.time()
+    totalTime = time_end - time_start
+    print("解码总时长：" + str(totalTime) + " s")
+    print("解码总长度：" + str(totalBits) + " bits")
+    print("平均解码速度：" + str(totalTime / totalBits * 1000) + " ms/bit")
 
 
 if __name__ == '__main__':
