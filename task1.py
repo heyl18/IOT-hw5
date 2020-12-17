@@ -105,7 +105,7 @@ def decode(filename='recordfile.wav', debug=False):
         print("比特错误率：" + str(errorBytes / totalBytes))
     print("解码总时长："+str(totalTime)+" s")
     print("解码总长度："+str(totalBytes)+" bits")
-    print("平均解码速度："+str(totalTime/totalBytes*1000)+"ms/bit")
+    print("平均解码速度："+str(totalTime/totalBytes*1000)+" ms/bit")
     write_ans_to_csv(ans)
 
 
