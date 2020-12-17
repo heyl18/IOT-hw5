@@ -3,6 +3,7 @@ from record import record_file
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
+import time
 
 f = 4000
 fs = 48000
@@ -68,7 +69,7 @@ def decode(filename='recordfile.wav', debug=False):
     返回：size：编码长度，string：解码出的字符串
     '''
     sig_rec, nframes, framerate = open_wave_file(filename)
-    sig_rec=np.concatenate((sig_rec,np.zeros(symbol_len*2)))
+    sig_rec = np.concatenate((sig_rec, np.zeros(symbol_len * 2)))
     # b, a = signal.butter(8, [2*4000*0.9/48000,2*6000*1.1/48000], 'bandpass')
     # sig_rec = signal.filtfilt(b, a, sig_rec)
 
@@ -78,29 +79,38 @@ def decode(filename='recordfile.wav', debug=False):
         payload = parse_csv(need_payload=True)
     ans = []
     count = 0
-    totalBytes=0
-    errorBytes=0
-    errorCount=0
+    totalBytes = 0
+    errorBytes = 0
+    errorCount = 0
+    totalTime = 0
     for i in onset:
+        time_start = time.time()
         size, decode_data = decode_wave(sig_rec[i:])
+        time_end = time.time()
+        totalTime += time_end - time_start
+        print(time_end-time_start)
         ans.append([size])
         for _ in decode_data:
             ans[-1].append(_)
         if debug:
-            totalBytes+=len(decode_data)
+            totalBytes += len(decode_data)
             for j in range(len(decode_data)):
-                errorBytes+=np.abs(payload[count][j]-decode_data[j])
-            flag=(payload[count] == decode_data)
-            errorCount+=int(not flag)
+                errorBytes += np.abs(payload[count][j] - decode_data[j])
+            flag = (payload[count] == decode_data)
+            errorCount += int(not flag)
             print(flag)
             count += 1
-    print("丢包率："+str(errorCount/count))
-    print("比特错误率："+str(errorBytes/totalBytes))
+    if debug:
+        print("丢包率：" + str(errorCount / count))
+        print("比特错误率：" + str(errorBytes / totalBytes))
+    print("解码总时长："+str(totalTime)+" s")
+    print("解码总长度："+str(totalBytes)+" bits")
+    print("平均解码速度："+str(totalTime/totalBytes*1000)+"ms/bit")
     write_ans_to_csv(ans)
 
 
 if __name__ == '__main__':
-    decode('res.wav',debug=True)
+    decode('res.wav', debug=True)
     # size, string = decode('res.wav')
     # if(size != 0 and string != None):
     #     print('length: %d' % int(size/8),string)
