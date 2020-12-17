@@ -71,7 +71,9 @@ def decode(filename='res.wav'):
     '''
     sig_rec, nframes, framerate = open_wave_file(filename)
     sig_rec_temp=sig_rec
-    sig_rec = sig_rec[3551416:3716040]
+    sig_start=2500000
+    sig_end=2639000
+    sig_rec = sig_rec[sig_start:sig_end]
     plt.plot(sig_rec)
     plt.show()
     max_symbol_sum = 0
@@ -83,7 +85,7 @@ def decode(filename='res.wav'):
     print(max_symbol_sum)
     for i in range(0, len(sig_rec) - symbol_len):
         symbol_sum = np.sum(np.abs(sig_rec[i:i + symbol_len]))
-        if symbol_sum > 0.7 * max_symbol_sum:
+        if symbol_sum > 0.8 * max_symbol_sum:
             max_sum = symbol_sum
             for j in range(i - int(symbol_len / 2), i + int(symbol_len)):
                 now_sum = np.sum(np.abs(sig_rec[j:j + symbol_len]))
@@ -92,7 +94,7 @@ def decode(filename='res.wav'):
                     first_impulse = j
             break
     print(first_impulse)
-    first_impulse+=3501416
+    first_impulse+=sig_start
     onset = [first_impulse]
     sig_rec=sig_rec_temp
     for i in onset:
