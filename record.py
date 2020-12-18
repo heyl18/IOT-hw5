@@ -1,10 +1,11 @@
 from utils import open_wave_file
 import pyaudio
 import wave
+import datetime
 import scipy.signal as signal
 import numpy as np
 
-def record_file(record_seconds = 5, wave_output_filename = "recordfile.wav"):
+def record_file(record_seconds = 5, wave_output_filename = "recordfile.wav", ret = False):
     CHUNK = 1024
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
@@ -23,8 +24,12 @@ def record_file(record_seconds = 5, wave_output_filename = "recordfile.wav"):
     print("开始录音......")
 
     frames = []
-
+    flag = True
+    time3 = datetime.datetime.timestamp(datetime.datetime.now())
     for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+        if flag:
+            time3 = datetime.datetime.timestamp(datetime.datetime.now())
+            flag = False
         data = stream.read(CHUNK)
         frames.append(data)
 
@@ -40,6 +45,8 @@ def record_file(record_seconds = 5, wave_output_filename = "recordfile.wav"):
     wf.setframerate(RATE)
     wf.writeframes(b''.join(frames))
     wf.close()
+    if ret:
+        return time3
 
 if __name__ == '__main__':
-    record_file()
+    record_file(10)

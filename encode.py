@@ -31,14 +31,9 @@ def encode(data):
     return sig
 
 if __name__ == '__main__':
-    user_str = input("Please enter a string to be encoded:")
     sig = []
-    blank_size = int(48000/4)
+    blank_size = int(fs/4)
+    for i in range(400):
+        sig.extend(smb1)
     sig.extend(np.zeros(2*blank_size))
-    for i in range(0,len(user_str),30):
-        j = 30 if i + 30 < len(user_str) else len(user_str)
-        test_code = str2code(user_str[i:i+j])
-        sig.extend(encode(test_code))
-        sig.extend(np.zeros(blank_size))
-    sig.extend(np.zeros(2*blank_size))
-    save_wave_file(sig,'output.wav',framerate=fs)
+    save_wave_file(sig,'getdistance.wav',framerate=fs)

@@ -2,6 +2,9 @@
 import socket
 import sys
 import datetime
+import matplotlib.pyplot as plt
+from record import record_file
+from utils import *
 # 创建 socket 对象
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
@@ -13,11 +16,13 @@ port = 10002
 
 # 连接服务，指定主机和端口
 s.connect((host, port))
-
+time3 = record_file(5,'recv.wav',True)
 # 接收小于 1024 字节的数据
-msg1 = datetime.datetime.timestamp(datetime.datetime.now())
-msg = s.recv(1024)
-
+time2 = s.recv(1024)
 s.close()
+data, nframes, framerate = open_wave_file('recv.wav')
+plt.plot(data)
+plt.show()
 
-print (msg1 ,msg.decode('utf-8'))
+print (time2.decode('utf-8'))
+print(time3)
