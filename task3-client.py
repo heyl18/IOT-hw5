@@ -9,28 +9,27 @@ from utils import *
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
 # 获取本地主机名
-host = '192.168.0.105'
+host = '192.168.0.102'
 
 # 设置端口号
 port = 20002
 
 # 连接服务，指定主机和端口
 s.connect((host, port))
-time3 = record_file(5,'recv.wav',True)
+time3 = record_file(2,'recv.wav',True)
 # 接收小于 1024 字节的数据
-time1 = s.recv(1024)
+time2 = s.recv(1024)
 s.close()
 sig_rec, nframes, framerate = open_wave_file('recv.wav')
-plt.plot(sig_rec)
-plt.show()
+# plt.plot(sig_rec)
+# plt.show()
 f = 6000
 fs = 48000
 duration = 0.0125
 symbol_len = int(duration * fs)
 size_data_len = 8
 pre_data_len = 10
-threshold = 0.35
-pre_threshold = 0.3
+pre_threshold = 0.6
 max_symbol_sum = 0
 first_impulse = 0  # 取出impulse 第一个起始位置
 for i in range(0, len(sig_rec) - symbol_len):
@@ -49,4 +48,5 @@ for i in range(0, len(sig_rec) - symbol_len):
                 first_impulse = j
         break
 print (first_impulse)
-print(float(time3)-float(time1.decode('utf-8').replace('\r\n','')) + float(first_impulse/fs))
+print(float(time3)-float(time2.decode('utf-8').replace('\r\n','')) + float(first_impulse/fs)-0.274 + 1)
+print((float(time3)-float(time2.decode('utf-8').replace('\r\n','')) + float(first_impulse/fs)-0.274 + 1)*340*100)
