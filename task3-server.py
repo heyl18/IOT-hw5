@@ -10,7 +10,7 @@ serversocket = socket.socket(
             socket.AF_INET, socket.SOCK_STREAM) 
 
 # 获取本地主机名
-host = socket.gethostname()
+host = '0.0.0.0'
 
 port = 10002
 
@@ -48,7 +48,7 @@ def pyaudioplay():
 while True:
     # 建立客户端连接
     from playsound import playsound
-    from time import time
+    import time
     clientsocket,addr = serversocket.accept()
     time.sleep(1)
     time1, time2 = pyaudioplay()
