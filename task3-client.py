@@ -37,7 +37,7 @@ for i in range(0, len(sig_rec) - symbol_len):
     symbol_sum = np.sum(np.abs(sig_rec[i:i + symbol_len]))
     if symbol_sum > max_symbol_sum:
         max_symbol_sum = symbol_sum
-    print(max_symbol_sum)
+    #print(max_symbol_sum)
 for i in range(0, len(sig_rec) - symbol_len):
     symbol_sum = np.sum(np.abs(sig_rec[i:i + symbol_len]))
     if symbol_sum > pre_threshold * max_symbol_sum:
@@ -48,5 +48,5 @@ for i in range(0, len(sig_rec) - symbol_len):
                 max_sum = now_sum
                 first_impulse = j
         break
-print (time1.decode('utf-8'))
-print(float(time3)-float(time1.decode('utf-8').replace('\r\n','')) + float(first_umpluse/fs))
+print (first_impulse)
+print(float(time3)-float(time1.decode('utf-8').replace('\r\n','')) + float(first_impulse/fs))
