@@ -13,7 +13,7 @@ serversocket = socket.socket(
 # 获取本地主机名
 host = '0.0.0.0'
 
-port = 10002
+port = 20002
 
 # 绑定端口号
 serversocket.bind((host, port))
@@ -54,6 +54,6 @@ while True:
     time.sleep(1)
     time1, time2 = pyaudioplay()
     print(time2 - time1)
-    msg = str(time1) + "\r\n"
+    msg = str(time2) + "\r\n"
     clientsocket.send(msg.encode('utf-8'))
     clientsocket.close()

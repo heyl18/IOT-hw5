@@ -12,7 +12,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 host = '192.168.0.105'
 
 # 设置端口号
-port = 10002
+port = 20002
 
 # 连接服务，指定主机和端口
 s.connect((host, port))
