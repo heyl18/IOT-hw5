@@ -5,6 +5,7 @@ import datetime
 import wave
 import pyaudio
 CHUNK = 1024
+
 # 创建 socket 对象
 serversocket = socket.socket(
             socket.AF_INET, socket.SOCK_STREAM) 
@@ -53,6 +54,6 @@ while True:
     time.sleep(1)
     time1, time2 = pyaudioplay()
     print(time2 - time1)
-    msg = str(time2) + "\r\n"
+    msg = str(time1) + "\r\n"
     clientsocket.send(msg.encode('utf-8'))
     clientsocket.close()
