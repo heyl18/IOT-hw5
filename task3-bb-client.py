@@ -79,18 +79,21 @@ def get_first_impulse(command):
 
 
 if __name__ == "__main__":
-    # 创建 socket 对象
-    serversocket = socket.socket(
-        socket.AF_INET, socket.SOCK_STREAM)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # 获取本地主机名
-    host = '0.0.0.0'
+    host = '192.168.0.102'
+    # 设置端口号
     port = 20002
-    # 绑定端口号
-    serversocket.bind((host, port))
-    # 设置最大连接数，超过后排队
-    serversocket.listen(5)
+    # 连接服务，指定主机和端口
+    s.connect((host, port))
+    thread2 = threading.Thread(target=pyaudiorecord())
+    thread2.start()
+    thread2.join()
+    get_first_impulse("recv")
 
-    clientsocket, addr = serversocket.accept()
+    msg = str(1) + "\r\n"
+    s.send(msg.encode('utf-8'))
+    s.recv(1024)
 
     thread1 = threading.Thread(target=pyaudioplay())
     thread2 = threading.Thread(target=pyaudiorecord())
@@ -100,15 +103,5 @@ if __name__ == "__main__":
     thread2.join()
     get_first_impulse("send")
 
-    clientsocket.recv(1024)
-    msg = str(1) + "\r\n"
-    clientsocket.send(msg.encode('utf-8'))
-
-    thread2 = threading.Thread(target=pyaudiorecord())
-    thread2.start()
-    thread2.join()
-    get_first_impulse("recv")
-
-    client_time=clientsocket.recv(1024)
-    client_time=client_time.decode("utf-8").replace("\r\n","")
-    client_time=client_time.split(" ")
+    msg = str(time1)+" "+str(time2)+" "+str(time3)+ "\r\n"
+    s.send(msg.encode('utf-8'))
