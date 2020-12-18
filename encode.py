@@ -34,6 +34,9 @@ if __name__ == '__main__':
     sig = []
     blank_size = int(fs/4)
     for i in range(400):
-        sig.extend(smb1)
+        if i % 2 == 0:
+            sig.extend(smb1)
+        else:
+            sig.extend(smb0)
     sig.extend(np.zeros(2*blank_size))
     save_wave_file(sig,'getdistance.wav',framerate=fs)
