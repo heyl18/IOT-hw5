@@ -18,11 +18,11 @@ port = 10002
 s.connect((host, port))
 time3 = record_file(5,'recv.wav',True)
 # 接收小于 1024 字节的数据
-time2 = s.recv(1024)
+time1 = s.recv(1024)
 s.close()
 data, nframes, framerate = open_wave_file('recv.wav')
 plt.plot(data)
 plt.show()
 
-print (time2.decode('utf-8'))
-print(float(time3)-float(time2.decode('utf-8').replace('\r\n',''))+5.5)
+print (time1.decode('utf-8'))
+print(float(time3)-float(time1.decode('utf-8').replace('\r\n','')))
