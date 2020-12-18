@@ -9,7 +9,7 @@ from utils import *
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
 # 获取本地主机名
-host = socket.gethostname() 
+host = '192.168.0.105'
 
 # 设置端口号
 port = 10002
@@ -25,4 +25,4 @@ plt.plot(data)
 plt.show()
 
 print (time2.decode('utf-8'))
-print(time3)
+print(float(time3)-float(time2.decode('utf-8').replace('\r\n',''))+5.5)
