@@ -33,7 +33,7 @@ def encode(data):
 if __name__ == '__main__':
     sig = []
     blank_size = int(fs/4)
-    for i in range(200):
+    for i in range(40):
         if i % 2 == 0:
             sig.extend(smb1)
         else:
