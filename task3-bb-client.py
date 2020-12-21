@@ -33,8 +33,6 @@ def pyaudioplay():
             flag = False
         stream.write(data)
         data = wf.readframes(CHUNK)
-    '''global time2
-    time2 = datetime.datetime.timestamp(datetime.datetime.now())'''
     stream.stop_stream()
     stream.close()
     p.terminate()
@@ -81,7 +79,7 @@ def get_first_impulse(command):
 if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # 获取本地主机名
-    host = '192.168.0.102'
+    host = '192.168.0.100'
     # 设置端口号
     port = 20002
     # 连接服务，指定主机和端口
@@ -95,8 +93,8 @@ if __name__ == "__main__":
     s.send(msg.encode('utf-8'))
     s.recv(1024)
 
-    thread1 = threading.Thread(target=pyaudioplay())
-    thread2 = threading.Thread(target=pyaudiorecord())
+    thread1 = threading.Thread(target=pyaudioplay)
+    thread2 = threading.Thread(target=pyaudiorecord)
     thread1.start()
     thread2.start()
     thread1.join()

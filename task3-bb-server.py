@@ -33,11 +33,10 @@ def pyaudioplay():
             flag = False
         stream.write(data)
         data = wf.readframes(CHUNK)
-    '''global time2
-    time2 = datetime.datetime.timestamp(datetime.datetime.now())'''
     stream.stop_stream()
     stream.close()
     p.terminate()
+
 
 
 def pyaudiorecord():
@@ -92,8 +91,8 @@ if __name__ == "__main__":
 
     clientsocket, addr = serversocket.accept()
 
-    thread1 = threading.Thread(target=pyaudioplay())
-    thread2 = threading.Thread(target=pyaudiorecord())
+    thread1 = threading.Thread(target=pyaudioplay)
+    thread2 = threading.Thread(target=pyaudiorecord)
     thread1.start()
     thread2.start()
     thread1.join()
