@@ -132,3 +132,4 @@ dmypy.json
 .vscode/
 *.wav
 *.csv
+task3-test.py

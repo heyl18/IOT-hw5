@@ -7,6 +7,7 @@ from utils import *
 import pyaudio
 import threading
 import time
+import multiprocessing
 
 CHUNK = 1024
 time1 = 0
@@ -91,8 +92,8 @@ if __name__ == "__main__":
 
     clientsocket, addr = serversocket.accept()
 
-    thread1 = threading.Thread(target=pyaudioplay)
-    thread2 = threading.Thread(target=pyaudiorecord)
+    thread1 = multiprocessing.Process(target=pyaudioplay)
+    thread2 = multiprocessing.Process(target=pyaudiorecord)
     thread1.start()
     thread2.start()
     thread1.join()
@@ -103,9 +104,7 @@ if __name__ == "__main__":
     msg = str(1) + "\r\n"
     clientsocket.send(msg.encode('utf-8'))
 
-    thread2 = threading.Thread(target=pyaudiorecord())
-    thread2.start()
-    thread2.join()
+    pyaudiorecord()
     get_first_impulse("recv")
 
     client_time=clientsocket.recv(1024)
