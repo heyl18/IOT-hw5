@@ -17,7 +17,7 @@ time_start_record = 0
 
 
 
-def pyaudioplay():
+def pyaudioplay(q):
     wf = wave.open('getdistance.wav', 'rb')
     p = pyaudio.PyAudio()
     stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
@@ -26,22 +26,20 @@ def pyaudioplay():
                     output=True)
     data = wf.readframes(CHUNK)
     time.sleep(1)
-    flag = True
+    time1 = datetime.datetime.timestamp(datetime.datetime.now())
     while len(data) > 0:
-        if flag:
-            global time1
-            time1 = datetime.datetime.timestamp(datetime.datetime.now())
-            flag = False
         stream.write(data)
         data = wf.readframes(CHUNK)
     stream.stop_stream()
     stream.close()
     p.terminate()
+    q.put(time1)
 
 
-def pyaudiorecord():
+def pyaudiorecord(q):
     global time_start_record
     time_start_record = record_file(3, 'recv.wav', True)
+    q.put(time_start_record)
 
 
 def get_first_impulse(command):
@@ -69,6 +67,7 @@ def get_first_impulse(command):
                     max_sum = now_sum
                     first_impulse = j
             break
+    print(first_impulse)
     if command == "send":
         global time2
         time2 = time_start_record + first_impulse / fs
@@ -80,24 +79,28 @@ def get_first_impulse(command):
 if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # 获取本地主机名
-    host = '192.168.0.100'
+    host = '192.168.0.102'
     # 设置端口号
     port = 20002
     # 连接服务，指定主机和端口
     s.connect((host, port))
-    pyaudiorecord()
+    time_start_record = record_file(3, 'recv.wav', True)
     get_first_impulse("recv")
 
     msg = str(1) + "\r\n"
     s.send(msg.encode('utf-8'))
     s.recv(1024)
 
-    thread1 = multiprocessing.Process(target=pyaudioplay)
-    thread2 = multiprocessing.Process(target=pyaudiorecord)
+    q1 = multiprocessing.Queue()
+    q2 = multiprocessing.Queue()
+    thread1 = multiprocessing.Process(target=pyaudioplay,args=(q1,))
+    thread2 = multiprocessing.Process(target=pyaudiorecord,args=(q2,))
     thread1.start()
     thread2.start()
     thread1.join()
     thread2.join()
+    time1=q1.get(True)
+    time_start_record=q2.get(True)
     get_first_impulse("send")
 
     msg = str(time1)+" "+str(time2)+" "+str(time3)+ "\r\n"

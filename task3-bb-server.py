@@ -16,8 +16,7 @@ time3 = 0
 time_start_record = 0
 
 
-
-def pyaudioplay():
+def pyaudioplay(q):
     wf = wave.open('getdistance.wav', 'rb')
     p = pyaudio.PyAudio()
     stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
@@ -26,23 +25,20 @@ def pyaudioplay():
                     output=True)
     data = wf.readframes(CHUNK)
     time.sleep(1)
-    flag = True
+    time1 = datetime.datetime.timestamp(datetime.datetime.now())
     while len(data) > 0:
-        if flag:
-            global time1
-            time1 = datetime.datetime.timestamp(datetime.datetime.now())
-            flag = False
         stream.write(data)
         data = wf.readframes(CHUNK)
     stream.stop_stream()
     stream.close()
     p.terminate()
+    q.put(time1)
 
 
-
-def pyaudiorecord():
+def pyaudiorecord(q):
     global time_start_record
     time_start_record = record_file(3, 'recv.wav', True)
+    q.put(time_start_record)
 
 
 def get_first_impulse(command):
@@ -89,11 +85,12 @@ if __name__ == "__main__":
     serversocket.bind((host, port))
     # 设置最大连接数，超过后排队
     serversocket.listen(5)
-
+    q1 = multiprocessing.Queue()
+    q2 = multiprocessing.Queue()
     clientsocket, addr = serversocket.accept()
 
-    thread1 = multiprocessing.Process(target=pyaudioplay)
-    thread2 = multiprocessing.Process(target=pyaudiorecord)
+    thread1 = multiprocessing.Process(target=pyaudioplay,args=(q1,))
+    thread2 = multiprocessing.Process(target=pyaudiorecord,args=(q2,))
     thread1.start()
     thread2.start()
     thread1.join()
@@ -104,9 +101,9 @@ if __name__ == "__main__":
     msg = str(1) + "\r\n"
     clientsocket.send(msg.encode('utf-8'))
 
-    pyaudiorecord()
+    time_start_record = record_file(3, 'recv.wav', True)
     get_first_impulse("recv")
 
-    client_time=clientsocket.recv(1024)
-    client_time=client_time.decode("utf-8").replace("\r\n","")
-    client_time=client_time.split(" ")
+    client_time = clientsocket.recv(1024)
+    client_time = client_time.decode("utf-8").replace("\r\n", "")
+    client_time = client_time.split(" ")
