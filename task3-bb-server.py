@@ -25,6 +25,7 @@ def pyaudioplay(q):
                     output=True)
     data = wf.readframes(CHUNK)
     time.sleep(1)
+    global time1
     time1 = datetime.datetime.timestamp(datetime.datetime.now())
     while len(data) > 0:
         stream.write(data)
@@ -37,7 +38,7 @@ def pyaudioplay(q):
 
 def pyaudiorecord(q):
     global time_start_record
-    time_start_record = record_file(3, 'recv.wav', True)
+    time_start_record = record_file(4, 'recv.wav', True)
     q.put(time_start_record)
 
 
@@ -95,15 +96,21 @@ if __name__ == "__main__":
     thread2.start()
     thread1.join()
     thread2.join()
+    time1=q1.get(True)
+    time_start_record=q2.get(True)
     get_first_impulse("send")
 
     clientsocket.recv(1024)
     msg = str(1) + "\r\n"
     clientsocket.send(msg.encode('utf-8'))
 
-    time_start_record = record_file(3, 'recv.wav', True)
+    time_start_record = record_file(4, 'recv.wav', True)
     get_first_impulse("recv")
 
     client_time = clientsocket.recv(1024)
     client_time = client_time.decode("utf-8").replace("\r\n", "")
     client_time = client_time.split(" ")
+    print(client_time)
+    print(time1,time2,time3)
+    dis = 340.0/2.0*( float(time3)-float(time2)- float(client_time[1]) + float(client_time[2]) )
+    print(dis)
