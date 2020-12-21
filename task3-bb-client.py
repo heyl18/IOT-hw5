@@ -82,17 +82,21 @@ if __name__ == "__main__":
     host = '192.168.0.102'
     # 设置端口号
     port = 20002
+    q1 = multiprocessing.Queue()
+    q2 = multiprocessing.Queue()
     # 连接服务，指定主机和端口
     s.connect((host, port))
-    time_start_record = record_file(3, 'recv.wav', True)
+    thread2 = multiprocessing.Process(target=pyaudiorecord, args=(q2,))
+    thread2.start()
+    thread2.join()
+    time_start_record=q2.get(True)
     get_first_impulse("recv")
 
     msg = str(1) + "\r\n"
     s.send(msg.encode('utf-8'))
     s.recv(1024)
 
-    q1 = multiprocessing.Queue()
-    q2 = multiprocessing.Queue()
+
     thread1 = multiprocessing.Process(target=pyaudioplay,args=(q1,))
     thread2 = multiprocessing.Process(target=pyaudiorecord,args=(q2,))
     thread1.start()
