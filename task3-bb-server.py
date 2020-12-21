@@ -104,10 +104,7 @@ if __name__ == "__main__":
     msg = str(1) + "\r\n"
     clientsocket.send(msg.encode('utf-8'))
 
-    thread2 = multiprocessing.Process(target=pyaudiorecord, args=(q2,))
-    thread2.start()
-    thread2.join()
-    time_start_record = q2.get(True)
+    time_start_record = record_file(4, 'recv.wav', True)
     get_first_impulse("recv")
 
     client_time = clientsocket.recv(1024)
