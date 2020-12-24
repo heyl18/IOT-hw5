@@ -78,7 +78,7 @@ def get_first_impulse(command,time_start_record):
 if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # 获取本地主机名
-    host = '192.168.0.102'
+    host = '192.168.0.101'
     # 设置端口号
     port = 20002
     # 连接服务，指定主机和端口

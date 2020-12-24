@@ -103,7 +103,7 @@ if __name__ == "__main__":
     clientsocket.recv(1024)
     msg = str(1) + "\r\n"
     clientsocket.send(msg.encode('utf-8'))
-
+    time.sleep(1)
     time_start_record = record_file(4, 'recv.wav', True)
     get_first_impulse("recv",time_start_record)
 

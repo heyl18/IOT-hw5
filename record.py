@@ -21,7 +21,7 @@ def record_file(record_seconds = 5, wave_output_filename = "recordfile.wav", ret
                     input=True,
                     frames_per_buffer=CHUNK)
 
-    print("开始录音......")
+    #print("开始录音......")
 
     frames = []
     flag = True
@@ -33,7 +33,7 @@ def record_file(record_seconds = 5, wave_output_filename = "recordfile.wav", ret
         data = stream.read(CHUNK)
         frames.append(data)
 
-    print("录音结束!")
+    #print("录音结束!")
 
     stream.stop_stream()
     stream.close()
