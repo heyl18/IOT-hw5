@@ -1,13 +1,12 @@
-import socket
-import sys
 import datetime
-import matplotlib.pyplot as plt
+import multiprocessing
+import socket
+import time
+
+import pyaudio
+
 from record import record_file
 from utils import *
-import pyaudio
-import threading
-import time
-import multiprocessing
 
 CHUNK = 1024
 time1 = 0
@@ -42,7 +41,7 @@ def pyaudiorecord(q):
     q.put(time_start_record)
 
 
-def get_first_impulse(command):
+def get_first_impulse(command,time_start_record):
     sig_rec, nframes, framerate = open_wave_file('recv.wav')
 
     f = 6000
@@ -85,7 +84,7 @@ if __name__ == "__main__":
     # 连接服务，指定主机和端口
     s.connect((host, port))
     time_start_record = record_file(3, 'recv.wav', True)
-    get_first_impulse("recv")
+    get_first_impulse("recv",time_start_record)
 
     msg = str(1) + "\r\n"
     s.send(msg.encode('utf-8'))
@@ -101,7 +100,7 @@ if __name__ == "__main__":
     thread2.join()
     time1=q1.get(True)
     time_start_record=q2.get(True)
-    get_first_impulse("send")
+    get_first_impulse("send",time_start_record)
 
     msg = str(time1)+" "+str(time2)+" "+str(time3)+ "\r\n"
     s.send(msg.encode('utf-8'))

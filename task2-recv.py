@@ -14,6 +14,7 @@ size_data_len = 8
 pre_data_len = 10
 threshold = 0.35
 pre_threshold=0.3
+seconds=0
 
 
 def decode_wave(sig_rec):
@@ -109,9 +110,12 @@ def decode(filename='recordfile.wav'):
         if _ == 0:
             sig_rec=sig_rec[first_impulse+(size_data_len + pre_data_len + size + 1) * symbol_len:]
     print(ans)
+    data = open("./data.txt", 'w+')
+    print(ans, file=data)
+    data.close()
     time_end = time.time()
     totalTime = time_end - time_start
-    print("解码总时长：" + str(totalTime) + " s")
+    print("解码总时长：" + str(totalTime+seconds) + " s")
     print("解码总长度：" + str(totalBits) + " bits")
     print("平均解码速度：" + str(totalTime / totalBits * 1000) + " ms/bit")
 
