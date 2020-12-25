@@ -2,7 +2,7 @@ import datetime
 import multiprocessing
 import socket
 import time
-
+import matplotlib.pyplot as plt
 import pyaudio
 
 from record import record_file
@@ -66,13 +66,30 @@ def get_first_impulse(command,time_start_record):
                     max_sum = now_sum
                     first_impulse = j
             break
+    window = int(symbol_len)  # 窗口长度为采样点个数
+    impulse_fft = np.zeros(window * 50)  # 定义变量数组impulse_fft，用于存储每个时刻对应的数据段中声音信号的强度
+    sig_rec = sig_rec[first_impulse - symbol_len:first_impulse + symbol_len]
+    for i in range(0, window * 5):
+        y = abs(np.fft.fft(sig_rec[i:i + window]))
+        index_impulse = round(f / fs * window)
+        # 考虑到声音通信过程中的频率偏移，我们取以目标频率为中心的5个频率采样点中最大的一个来代表目标频率的强度
+        impulse_fft[i] = max(y[index_impulse - 2:index_impulse + 2])
+    impulse_fft = impulse_fft / max(impulse_fft)  # 幅值归一化
+    max_impulse = max(impulse_fft)
+    real_first_impulse = symbol_len
+    for i in range(len(impulse_fft)):
+        if impulse_fft == max_impulse:
+            real_first_impulse = i
+            break
+    real_first_impulse = first_impulse-symbol_len + real_first_impulse
+    print(real_first_impulse)
     print(first_impulse)
     if command == "send":
         global time2
-        time2 = time_start_record + first_impulse / fs
+        time2 = time_start_record + real_first_impulse / fs
     else:
         global time3
-        time3 = time_start_record + first_impulse / fs
+        time3 = time_start_record + real_first_impulse / fs
 
 
 if __name__ == "__main__":
