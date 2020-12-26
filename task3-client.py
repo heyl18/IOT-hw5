@@ -9,14 +9,14 @@ from utils import *
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
 # 获取本地主机名
-host = '192.168.0.102'
+host = '192.168.0.107'
 
 # 设置端口号
 port = 20002
 
 # 连接服务，指定主机和端口
 s.connect((host, port))
-time3 = record_file(2,'recv.wav',True)
+time3 = record_file(3,'recv.wav',True)
 # 接收小于 1024 字节的数据
 time2 = s.recv(1024)
 s.close()
@@ -48,5 +48,4 @@ for i in range(0, len(sig_rec) - symbol_len):
                 first_impulse = j
         break
 print (first_impulse)
-print(float(time3)-float(time2.decode('utf-8').replace('\r\n','')) + float(first_impulse/fs)-0.274 + 1)
-print((float(time3)-float(time2.decode('utf-8').replace('\r\n','')) + float(first_impulse/fs)-0.274 + 1)*340*100)
+print((float(time3)-float(time2.decode('utf-8').replace('\r\n','')) + float(first_impulse/fs)+1.025)*340)

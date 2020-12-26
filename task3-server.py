@@ -32,7 +32,7 @@ def pyaudioplay():
                     output=True)
     data = wf.readframes(CHUNK)
     flag = True
-    time1_now = 0
+    time1 = 0
     while len(data) > 0:
         if flag:
             time1_now = datetime.datetime.timestamp(datetime.datetime.now())
