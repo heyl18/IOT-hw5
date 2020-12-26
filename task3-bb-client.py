@@ -19,10 +19,13 @@ time_start_record = 0
 def pyaudioplay(q):
     wf = wave.open('getdistance.wav', 'rb')
     p = pyaudio.PyAudio()
+    time_00 = datetime.datetime.timestamp(datetime.datetime.now())
     stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                     channels=wf.getnchannels(),
                     rate=wf.getframerate(),
                     output=True)
+    time_01 = datetime.datetime.timestamp(datetime.datetime.now())
+    print(time_01,time_00)
     data = wf.readframes(CHUNK)
     time.sleep(1)
     time1 = datetime.datetime.timestamp(datetime.datetime.now())

@@ -14,7 +14,7 @@ def record_file(record_seconds = 5, wave_output_filename = "recordfile.wav", ret
     WAVE_OUTPUT_FILENAME = wave_output_filename
 
     p = pyaudio.PyAudio()
-
+    time2 = datetime.datetime.timestamp(datetime.datetime.now())
     stream = p.open(format=FORMAT,
                     channels=CHANNELS,
                     rate=RATE,
@@ -22,14 +22,10 @@ def record_file(record_seconds = 5, wave_output_filename = "recordfile.wav", ret
                     frames_per_buffer=CHUNK)
 
     #print("开始录音......")
-
-    frames = []
-    flag = True
     time3 = datetime.datetime.timestamp(datetime.datetime.now())
+    print(time3, time2)
+    frames = []
     for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        if flag:
-            time3 = datetime.datetime.timestamp(datetime.datetime.now())
-            flag = False
         data = stream.read(CHUNK)
         frames.append(data)
 
