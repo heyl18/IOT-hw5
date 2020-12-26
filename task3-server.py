@@ -4,11 +4,12 @@ import sys
 import datetime
 import wave
 import pyaudio
+
 CHUNK = 1024
 
 # 创建 socket 对象
 serversocket = socket.socket(
-            socket.AF_INET, socket.SOCK_STREAM) 
+    socket.AF_INET, socket.SOCK_STREAM)
 
 # 获取本地主机名
 host = '0.0.0.0'
@@ -22,38 +23,38 @@ serversocket.bind((host, port))
 serversocket.listen(5)
 
 
-
 def pyaudioplay():
     wf = wave.open('getdistance.wav', 'rb')
     p = pyaudio.PyAudio()
     stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
-                channels=wf.getnchannels(),
-                rate=wf.getframerate(),
-                output=True)
+                    channels=wf.getnchannels(),
+                    rate=wf.getframerate(),
+                    output=True)
     data = wf.readframes(CHUNK)
     flag = True
-    time1 = datetime.datetime.timestamp(datetime.datetime.now())
-    time2 = datetime.datetime.timestamp(datetime.datetime.now())
+    time1_now = 0
     while len(data) > 0:
         if flag:
-            time1 = datetime.datetime.timestamp(datetime.datetime.now())
+            time1_now = datetime.datetime.timestamp(datetime.datetime.now())
             flag = False
         stream.write(data)
         data = wf.readframes(CHUNK)
-    time2 = datetime.datetime.timestamp(datetime.datetime.now())
+    time2_now = datetime.datetime.timestamp(datetime.datetime.now())
     stream.stop_stream()
     stream.close()
     p.terminate()
-    return time1,time2
+    return time1_now, time2_now
+
 
 while True:
     # 建立客户端连接
-    from playsound import playsound
     import time
-    clientsocket,addr = serversocket.accept()
-    time.sleep(1)
+
+    clientsocket, addr = serversocket.accept()
+    time.sleep(1.5)
     time1, time2 = pyaudioplay()
     print(time2 - time1)
     msg = str(time2) + "\r\n"
     clientsocket.send(msg.encode('utf-8'))
     clientsocket.close()
+    break
