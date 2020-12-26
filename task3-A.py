@@ -75,6 +75,7 @@ while True:
     # 建立客户端连接
     clientsocket, addr = serversocket.accept()
     time.sleep(1)
+    time_begin = time.time()
     timeA1 = pyaudioplay()
     timeB2 = float(clientsocket.recv(1024).decode('utf-8').replace('\r\n',''))
     msg = str("1") + "\r\n"
@@ -90,4 +91,6 @@ while True:
     print(dis_ab,dis_ba)
     dis = (dis_ab+dis_ba)/2.0
     print(dis)
+    time_end = time.time()
+    print(time_end-time_begin)
     break
