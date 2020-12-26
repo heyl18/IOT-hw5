@@ -32,8 +32,7 @@ def pyaudioplay():
                 output=True)
     data = wf.readframes(CHUNK)
     flag = True
-    time1 = datetime.datetime.timestamp(datetime.datetime.now())
-    time2 = datetime.datetime.timestamp(datetime.datetime.now())
+    time1 = 0
     while len(data) > 0:
         if flag:
             time1 = datetime.datetime.timestamp(datetime.datetime.now())
@@ -57,3 +56,4 @@ while True:
     msg = str(time2) + "\r\n"
     clientsocket.send(msg.encode('utf-8'))
     clientsocket.close()
+    break
