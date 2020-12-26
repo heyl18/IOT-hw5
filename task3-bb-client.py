@@ -17,21 +17,21 @@ time_start_record = 0
 
 
 def pyaudioplay(q):
+    time.sleep(1)
     wf = wave.open('getdistance.wav', 'rb')
     p = pyaudio.PyAudio()
-    time_00 = datetime.datetime.timestamp(datetime.datetime.now())
     stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                     channels=wf.getnchannels(),
                     rate=wf.getframerate(),
                     output=True)
-    time_01 = datetime.datetime.timestamp(datetime.datetime.now())
-    print("INCOMING...")
-    print(time_01,time_00)
+    flag=False
     data = wf.readframes(CHUNK)
-    time.sleep(1)
-    time1 = datetime.datetime.timestamp(datetime.datetime.now())
     while len(data) > 0:
         stream.write(data)
+        if not flag:
+            global time1
+            time1 = datetime.datetime.timestamp(datetime.datetime.now())
+            flag=True
         data = wf.readframes(CHUNK)
     stream.stop_stream()
     stream.close()
@@ -82,7 +82,7 @@ def get_first_impulse(command,time_start_record):
 if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # 获取本地主机名
-    host = '192.168.0.101'
+    host = '192.168.0.106'
     # 设置端口号
     port = 20002
     # 连接服务，指定主机和端口

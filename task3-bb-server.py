@@ -16,22 +16,21 @@ time_start_record = 0
 
 
 def pyaudioplay(q):
+    time.sleep(1)
     wf = wave.open('getdistance.wav', 'rb')
     p = pyaudio.PyAudio()
-    time_00 = datetime.datetime.timestamp(datetime.datetime.now())
     stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                     channels=wf.getnchannels(),
                     rate=wf.getframerate(),
                     output=True)
-    time_01 = datetime.datetime.timestamp(datetime.datetime.now())
-    print("INCOMING...")
-    print(time_01, time_00)
+    flag=False
     data = wf.readframes(CHUNK)
-    time.sleep(1)
-    global time1
-    time1 = datetime.datetime.timestamp(datetime.datetime.now())
     while len(data) > 0:
         stream.write(data)
+        if not flag:
+            global time1
+            time1 = datetime.datetime.timestamp(datetime.datetime.now())
+            flag=True
         data = wf.readframes(CHUNK)
     stream.stop_stream()
     stream.close()
