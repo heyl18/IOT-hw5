@@ -25,6 +25,7 @@ def pyaudioplay(q):
                     rate=wf.getframerate(),
                     output=True)
     time_01 = datetime.datetime.timestamp(datetime.datetime.now())
+    print("INCOMING...")
     print(time_01,time_00)
     data = wf.readframes(CHUNK)
     time.sleep(1)

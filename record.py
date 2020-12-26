@@ -23,6 +23,7 @@ def record_file(record_seconds = 5, wave_output_filename = "recordfile.wav", ret
 
     #print("开始录音......")
     time3 = datetime.datetime.timestamp(datetime.datetime.now())
+    print("INCOMING...")
     print(time3, time2)
     frames = []
     for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
