@@ -57,4 +57,3 @@ while True:
     msg = str(time2) + "\r\n"
     clientsocket.send(msg.encode('utf-8'))
     clientsocket.close()
-    break
