@@ -53,6 +53,7 @@ def get_first_impulse(command, time_start_record):
     symbol_len = int(duration * fs)
     pre_threshold = 0.6
     max_symbol_sum = 0
+	
     first_impulse = 0  # 取出impulse 第一个起始位置
     for i in range(0, len(sig_rec) - symbol_len):
         symbol_sum = np.sum(np.abs(sig_rec[i:i + symbol_len]))
@@ -118,5 +119,7 @@ if __name__ == "__main__":
     time_end=time.time()
     print("Total time:"+str(time_end-time_start))
     dis = 340.0/2.0*( float(time3)-float(time2)- float(client_time[1]) + float(client_time[2]) )
-    print(dis)
+    print(dis*100)
+    dis = 340.0/2.0*( float(time3)-float(time1)- float(client_time[0]) + float(client_time[2]) )
+    print(dis*100)
 
